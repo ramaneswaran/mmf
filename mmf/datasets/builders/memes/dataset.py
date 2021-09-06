@@ -71,6 +71,11 @@ class MemesDataset(MMFDataset):
  
         
         current_sample.image = self.image_db[idx]["images"][0]
+        
+        print(self.image_db[idx]['image'][0])
+
+        if current_sample.image is None:
+            print("All is not well")
 
         return current_sample
 
