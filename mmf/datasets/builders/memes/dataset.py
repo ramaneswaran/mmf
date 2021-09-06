@@ -66,6 +66,8 @@ class MemesDataset(MMFDataset):
         label = torch.tensor(rev_map[key], dtype=torch.long)
 
         current_sample.targets = label
+
+        print(self.image_db[idx])
  
         
         current_sample.image = self.image_db[idx]["images"][0]
