@@ -3,12 +3,12 @@ includes:
 
 model_config:
   concat_bert:
-    num_labels: 3
+    num_labels: 6
     classifier:
       type: mlp
       params:
         num_layers: 2
-        out_dim: 3
+        out_dim: 6
     losses:
     - type: cross_entropy
 
@@ -28,10 +28,6 @@ evaluation:
   metrics:
     - accuracy
     - macro_f1
-    - recall_macro
-    - precision_macro
-    - mae
-    - mmae
     
 training:
   batch_size: 16
