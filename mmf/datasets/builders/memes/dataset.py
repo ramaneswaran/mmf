@@ -51,6 +51,7 @@ class MemesDataset(MMFDataset):
         current_sample.id = torch.tensor(id, dtype=torch.int)
 
         label_map = {0: 'fear', 1: 'anger', 2: 'joy', 3: 'sadness', 4: 'surprise', 5: 'disgust'}
+        rev_map = {'fear': 0, 'anger': 1, 'joy': 2, 'sadness': 3, 'surprise': 4, 'disgust': 5}
 
         # if sample_info['labels'][1] == 'individual':
         #     label = torch.tensor(0, dtype=torch.long)
@@ -61,8 +62,8 @@ class MemesDataset(MMFDataset):
         # else:
         #     label = torch.tensor(3, dtype=torch.long)
 
-        key = int(sample_info['labels'][0])
-        label = torch.tensor(label_map[key], dtype=torch.long)
+        key = sample_info['labels'][0]
+        label = torch.tensor(rev_map[key], dtype=torch.long)
 
         current_sample.targets = label
  
