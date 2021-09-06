@@ -14,6 +14,10 @@ MemesDataset,
 MemesFeatureDataset
 )
 
+from mmf.utils.general import get_mmf_root
+
+logger = logging.getLogger(__name__)
+
 
 @registry.register_builder("memes")
 class MemesTgtBuilder(MMFDatasetBuilder):
