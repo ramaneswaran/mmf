@@ -22,11 +22,11 @@ dataset_config:
       - memes/defaults/features/detectron.lmdb
     annotations:
       train:
-      - memes/defaults/annotations/train.json
+      - memes/defaults/annotations/train.jsonl
       test:
-      - memes/defaults/annotations/test.json
+      - memes/defaults/annotations/test.jsonl
       val:
-      - memes/defaults/annotations/val.json
+      - memes/defaults/annotations/val.jsonl
     max_features: 100
     processors:
       # text_processor:
