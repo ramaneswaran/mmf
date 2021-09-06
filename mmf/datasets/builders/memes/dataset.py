@@ -61,7 +61,7 @@ class MemesDataset(MMFDataset):
         # else:
         #     label = torch.tensor(3, dtype=torch.long)
 
-        key = int(sample_info['labels'][1])
+        key = int(sample_info['labels'][0])
         label = torch.tensor(label_map[key], dtype=torch.long)
 
         current_sample.targets = label
