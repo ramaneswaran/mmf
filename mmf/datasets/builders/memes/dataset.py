@@ -47,7 +47,7 @@ class MemesDataset(MMFDataset):
         # else:
         #     id = int(sample_info['id'].split("covid_memes_")[1])
         
-        id = sample_info['id'][len('meme_'):]
+        id = int(sample_info['id'][len('meme_'):])
         current_sample.id = torch.tensor(id, dtype=torch.int)
 
         label_map = {0: 'fear', 1: 'anger', 2: 'joy', 3: 'sadness', 4: 'surprise', 5: 'disgust'}
