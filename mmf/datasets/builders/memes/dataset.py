@@ -67,56 +67,61 @@ class MemesDataset(MMFDataset):
 
         current_sample.targets = label
 
-        print(self.image_db[idx])
- 
         
         current_sample.image = self.image_db[idx]["images"][0]
         
-        print(self.image_db[idx]['image'][0])
-
-        if current_sample.image is None:
-            print("All is not well")
-
         return current_sample
+
 
 class MemesFeatureDataset(MMFDataset):
     def __init__(self, config, *args, dataset_name="memes", **kwargs):
         super().__init__(dataset_name, config, *args, **kwargs)
         print(config)
         assert (
-            self._use_images
+            self._use_features
         )
-
+        
         self._data_dir = os.path.join(get_mmf_root(), config.data_dir)
         self._data_folder = self._data_dir
-
-    def init_processors(self):
-        super().init_processors()
-        self.image_db.transform = self.image_processor
-    
+        
+    def preprocess_sample_info(self, sample_info):
+        image_path = sample_info["image"]
+        feature_path = image_path.split(".")[0]
+        sample_info["feature_path"] = f"{feature_path}.npy"
+        return sample_info
+        
     def __len__(self):
         return len(self.annotation_db)
 
     def __getitem__(self, idx):
-
         sample_info = self.annotation_db[idx]
         current_sample = Sample()
 
         processed_text = self.text_processor({"text": sample_info["text"]})
         current_sample.text = processed_text["text"]
         
-        if "input_ids" in processed_text:
-            current_sample.update(processed_text)
+        # if "input_ids" in processed_text:
+        #     current_sample.update(processed_text)
             
-        # if "meme" in sample_info['id']:
-        #     id = int(sample_info['id'].split("meme")[1]) + 10000
+        # if "covid_memes" in sample_info['id']:
+        #     id = int(sample_info['id'].split("covid_memes_")[1]) + 10000
         # else:
         #     id = int(sample_info['id'].split("covid_memes_")[1])
-        
-        id = sample_info['id'][len('meme_'):]
+        # current_sample.id = torch.tensor(id, dtype=torch.int)
+
+        id = int(sample_info['id'][len('meme_'):])
         current_sample.id = torch.tensor(id, dtype=torch.int)
 
         label_map = {0: 'fear', 1: 'anger', 2: 'joy', 3: 'sadness', 4: 'surprise', 5: 'disgust'}
+        rev_map = {'fear': 0, 'anger': 1, 'joy': 2, 'sadness': 3, 'surprise': 4, 'disgust': 5}
+
+        
+        features = self.features_db.get(sample_info)
+        if hasattr(self, "transformer_bbox_processor"):
+            features["image_info_0"] = self.transformer_bbox_processor(
+                features["image_info_0"]
+            )
+        current_sample.update(features)
 
         # if sample_info['labels'][1] == 'individual':
         #     label = torch.tensor(0, dtype=torch.long)
@@ -126,13 +131,15 @@ class MemesFeatureDataset(MMFDataset):
         #     label = torch.tensor(2, dtype=torch.long)
         # else:
         #     label = torch.tensor(3, dtype=torch.long)
+        # current_sample.targets = label
 
-        key = int(sample_info['labels'][1])
-        label = torch.tensor(label_map[key], dtype=torch.long)
+        key = sample_info['labels'][0]
+        label = torch.tensor(rev_map[key], dtype=torch.long)
 
         current_sample.targets = label
- 
         
-        current_sample.image = self.image_db[idx]["images"][0]
+        
+ 
+        #current_sample.image = self.image_db[idx]["images"][0]
 
         return current_sample
